@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I'm So Sorry 💕</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Fredoka', 'Quicksand', sans-serif;
+      background: radial-gradient(circle at center, #2e1065 0%, #17072b 60%, #0c021a 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Background Canvas for Particles & Fireworks */
+    #bgCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Floating Ambient Hearts Layer */
+    .ambient-hearts-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* Floating Heart Animation */
+    .floating-heart {
+      position: absolute;
+      color: rgba(236, 72, 153, 0.4);
+      font-size: 20px;
+      animation: floatUp 8s infinite ease-in-out;
+      filter: drop-shadow(0 0 6px rgba(244, 114, 182, 0.6));
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(105vh) scale(0.5) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.2) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Main Container */
+    .main-container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+    }
+
+    /* Glowing Heart Element */
+    .heart-wrapper {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @media (min-width: 600px) {
+      .heart-wrapper {
+        width: 420px;
+        height: 420px;
+      }
+    }
+
+    /* SVG Heart Graphic */
+    .heart-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 25px rgba(236, 72, 153, 0.8)) 
+              drop-shadow(0 0 50px rgba(168, 85, 247, 0.6))
+              drop-shadow(0 0 80px rgba(219, 39, 119, 0.4));
+      animation: heartPulse 1.8s infinite ease-in-out;
+      transform-origin: center;
+    }
+
+    @keyframes heartPulse {
+      0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 25px rgba(236, 72, 153, 0.8)) drop-shadow(0 0 50px rgba(168, 85, 247, 0.6));
+      }
+      15% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 35px rgba(244, 114, 182, 0.9)) drop-shadow(0 0 65px rgba(192, 132, 252, 0.8));
+      }
+      28% {
+        transform: scale(1.02);
+      }
+      42% {
+        transform: scale(1.12);
+        filter: drop-shadow(0 0 45px rgba(244, 114, 182, 1)) drop-shadow(0 0 80px rgba(192, 132, 252, 0.9));
+      }
+      70% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 25px rgba(236, 72, 153, 0.8)) drop-shadow(0 0 50px rgba(168, 85, 247, 0.6));
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Bounce/Pop animation when clicked */
+    .heart-wrapper.clicked .heart-svg {
+      animation: heartClickPop 0.6s ease-out forwards, heartPulse 1.8s infinite ease-in-out 0.6s;
+    }
+
+    @keyframes heartClickPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.35) rotate(-5deg); }
+      70% { transform: scale(0.9) rotate(3deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    /* Text inside the heart */
+    .heart-text-container {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 75%;
+      text-align: center;
+      pointer-events: none;
+      z-index: 12;
+    }
+
+    .heart-text {
+      color: #ffffff;
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.45;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      text-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.9),
+        0 0 20px rgba(244, 114, 182, 0.9),
+        0 0 30px rgba(168, 85, 247, 0.8),
+        0 2px 4px rgba(0, 0, 0, 0.5);
+      animation: textGlow 2s infinite alternate;
+      word-wrap: break-word;
+    }
+
+    @media (min-width: 600px) {
+      .heart-text {
+        font-size: 1.85rem;
+      }
+    }
+
+    @keyframes textGlow {
+      from {
+        text-shadow: 
+          0 0 10px rgba(255, 255, 255, 0.9),
+          0 0 20px rgba(244, 114, 182, 0.8),
+          0 0 30px rgba(168, 85, 247, 0.8);
+      }
+      to {
+        text-shadow: 
+          0 0 15px rgba(255, 255, 255, 1),
+          0 0 25px rgba(244, 114, 182, 1),
+          0 0 40px rgba(219, 39, 119, 0.9),
+          0 0 50px rgba(168, 85, 247, 0.9);
+      }
+    }
+
+    /* Tap/Click Hint */
+    .click-hint-badge {
+      margin-top: 30px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fbcfe8;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      animation: hintPulse 2s infinite ease-in-out;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.7; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-5px); }
+    }
+
+    /* Dynamic SORRY Floating Elements */
+    .sorry-pop {
+      position: absolute;
+      font-weight: 700;
+      color: #ffffff;
+      pointer-events: none;
+      z-index: 20;
+      white-space: nowrap;
+      filter: drop-shadow(0 0 12px rgba(236, 72, 153, 0.9));
+      animation-fill-mode: forwards;
+    }
+
+    /* Keyframes for SORRY pops */
+    @keyframes sorryFloatUp {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.3) rotate(-10deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(-50%, -80%) scale(1.2) rotate(5deg);
+      }
+      80% {
+        opacity: 0.9;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -200%) scale(0.8) rotate(15deg);
+      }
+    }
+
+    @keyframes sorryPopIn {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0) rotate(20deg);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.4) rotate(-10deg);
+      }
+      70% {
+        transform: translate(-50%, -50%) scale(1) rotate(5deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+      }
+    }
+
+    @keyframes sorryBounce {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(50px) scale(0.5);
+      }
+      30% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(-20px) scale(1.3);
+      }
+      60% {
+        transform: translate(-50%, -50%) translateY(10px) scale(0.95);
+      }
+      80% {
+        transform: translate(-50%, -50%) translateY(-5px) scale(1.05);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(-50px) scale(0.8);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Fireworks Canvas -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Ambient Floating Hearts Layer -->
+  <div class="ambient-hearts-container" id="ambientHearts"></div>
+
+  <!-- Main Display -->
+  <div class="main-container">
+    <div class="heart-wrapper" id="heartButton">
+      <!-- Pulsing SVG Heart -->
+      <svg class="heart-svg" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f43f5e" />
+            <stop offset="50%" stop-color="#ec407a" />
+            <stop offset="100%" stop-color="#a855f7" />
+          </linearGradient>
+          <radialGradient id="heartGlow" cx="50%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4" />
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+        <path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z" fill="url(#heartGradient)"/>
+        <!-- Inner Highlight -->
+        <path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z" fill="url(#heartGlow)"/>
+      </svg>
+
+      <!-- Center Text inside Heart -->
+      <div class="heart-text-container">
+        <div class="heart-text">SORRY NAAAAAAA ICE TA INIG MONDAY HA</div>
+      </div>
+    </div>
+
+    <!-- Hint Badge -->
+    <div class="click-hint-badge" id="hintBadge">✨ Tap the heart ✨</div>
+  </div>
+
+  <script>
+    // --- AMBIENT FLOATING HEARTS GENERATOR ---
+    const ambientContainer = document.getElementById('ambientHearts');
+    const heartSymbols = ['💖', '💗', '💓', '💕', '✨', '🌸', '💜', '💜'];
+
+    function createAmbientHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart';
+      heart.innerText = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (6 + Math.random() * 6) + 's';
+      heart.style.fontSize = (14 + Math.random() * 20) + 'px';
+      heart.style.opacity = Math.random() * 0.7 + 0.3;
+      ambientContainer.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 12000);
+    }
+
+    // Generate initial set & interval
+    for (let i = 0; i < 15; i++) {
+      setTimeout(createAmbientHeart, i * 400);
+    }
+    let ambientInterval = setInterval(createAmbientHeart, 600);
+
+    // --- CANVAS FIREWORKS ENGINE ---
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    let particles = [];
+    let sparkles = [];
+
+    // Color Palette for Fireworks
+    const fireworkColors = [
+      '#f43f5e', '#ec407a', '#d946ef', '#a855f7', 
+      '#8b5cf6', '#6366f1', '#f472b6', '#c084fc',
+      '#fb7185', '#ffffff', '#ffd1dc'
+    ];
+
+    class Particle {
+      constructor(x, y, isHeart = false, customColor = null) {
+        this.x = x;
+        this.y = y;
+        this.isHeart = isHeart;
+        this.color = customColor || fireworkColors[Math.floor(Math.random() * fireworkColors.length)];
+        
+        const angle = Math.random() * Math.PI * 2;
+        const speed = isHeart ? (Math.random() * 4 + 2) : (Math.random() * 7 + 1.5);
+        
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.gravity = 0.04;
+        this.friction = 0.96;
+        this.alpha = 1;
+        this.decay = Math.random() * 0.018 + 0.008;
+        this.size = isHeart ? (Math.random() * 8 + 10) : (Math.random() * 3.5 + 1.5);
+        this.rotation = Math.random() * Math.PI * 2;
+        this.spin = (Math.random() - 0.5) * 0.1;
+      }
+
+      update() {
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= this.decay;
+        this.rotation += this.spin;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = Math.max(this.alpha, 0);
+        ctx.translate(this.x, this.y);
+
+        if (this.isHeart) {
+          ctx.rotate(this.rotation);
+          ctx.fillStyle = this.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = this.color;
+          // Draw heart path
+          ctx.beginPath();
+          const s = this.size / 15;
+          ctx.moveTo(0, 0);
+          ctx.bezierCurveTo(-10 * s, -10 * s, -20 * s, 5 * s, 0, 15 * s);
+          ctx.bezierCurveTo(20 * s, 5 * s, 10 * s, -10 * s, 0, 0);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = this.color;
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    // Floating Sparkle Particle Background
+    class Sparkle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.alpha = Math.random() * 0.8 + 0.2;
+        this.speed = Math.random() * 0.02 + 0.005;
+        this.dir = Math.random() > 0.5 ? 1 : -1;
+      }
+      update() {
+        this.alpha += this.speed * this.dir;
+        if (this.alpha >= 1 || this.alpha <= 0.1) {
+          this.dir *= -1;
+        }
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = '#fbcfe8';
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#e879f9';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Populate initial sparkles
+    for (let i = 0; i < 70; i++) {
+      sparkles.push(new Sparkle());
+    }
+
+    function createFireworkExplosion(originX, originY) {
+      const count = Math.floor(Math.random() * 40) + 60;
+      for (let i = 0; i < count; i++) {
+        const isHeart = Math.random() < 0.35; // 35% chance of heart particle
+        particles.push(new Particle(originX, originY, isHeart));
+      }
+    }
+
+    // Animation Loop
+    function animate() {
+      // Clear with slight trail effect
+      ctx.fillStyle = 'rgba(12, 2, 26, 0.22)';
+      ctx.fillRect(0, 0, width, height);
+
+      // Render Sparkles
+      sparkles.forEach(sparkle => {
+        sparkle.update();
+        sparkle.draw();
+      });
+
+      // Render Fireworks Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // --- INTERACTION & "SORRY" EXPLOSIONS ---
+    const heartBtn = document.getElementById('heartButton');
+    const hintBadge = document.getElementById('hintBadge');
+
+    const sorryTexts = ['SORRY', 'SORRY 🥺', 'SORRY NA', 'PLEASE SORRY', 'SORRY ❤️', 'SORRY 🙏', 'I\'M SORRY', 'SORRY NAAA'];
+    const sorryAnimations = ['sorryFloatUp', 'sorryPopIn', 'sorryBounce'];
+
+    function spawnSorryText(x, y) {
+      const el = document.createElement('div');
+      el.className = 'sorry-pop';
+      el.innerText = sorryTexts[Math.floor(Math.random() * sorryTexts.length)];
+      
+      // Random position around target or screen
+      const offsetX = (Math.random() - 0.5) * (window.innerWidth * 0.7);
+      const offsetY = (Math.random() - 0.5) * (window.innerHeight * 0.6);
+      
+      const posX = x + offsetX;
+      const posY = y + offsetY;
+
+      el.style.left = Math.max(60, Math.min(window.innerWidth - 60, posX)) + 'px';
+      el.style.top = Math.max(60, Math.min(window.innerHeight - 60, posY)) + 'px';
+
+      const anim = sorryAnimations[Math.floor(Math.random() * sorryAnimations.length)];
+      const duration = (1.5 + Math.random() * 1.2).toFixed(2);
+      const size = (1.2 + Math.random() * 1.5).toFixed(2);
+      const colors = ['#ffffff', '#fbcfe8', '#f472b6', '#e879f9', '#c084fc', '#f43f5e'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+
+      el.style.fontSize = size + 'rem';
+      el.style.color = color;
+      el.style.animation = `${anim} ${duration}s ease-out forwards`;
+
+      document.body.appendChild(el);
+
+      setTimeout(() => {
+        el.remove();
+      }, duration * 1000);
+    }
+
+    function triggerApologyExplosion(e) {
+      // Bounce animation on heart
+      heartBtn.classList.remove('clicked');
+      void heartBtn.offsetWidth; // Force reflow
+      heartBtn.classList.add('clicked');
+
+      // Update hint badge text
+      hintBadge.innerText = '✨ Sending all my apologies! ✨';
+      hintBadge.style.opacity = '0.9';
+
+      // Get click position or default to heart center
+      const rect = heartBtn.getBoundingClientRect();
+      const originX = e ? (e.clientX || (e.touches && e.touches[0].clientX)) : (rect.left + rect.width / 2);
+      const originY = e ? (e.clientY || (e.touches && e.touches[0].clientY)) : (rect.top + rect.height / 2);
+
+      // Immediate Fireworks & Sorry pops
+      createFireworkExplosion(originX, originY);
+      for (let i = 0; i < 12; i++) {
+        setTimeout(() => {
+          spawnSorryText(originX, originY);
+        }, i * 90);
+      }
+
+      // Continuous Fireworks Stream for several seconds
+      let bursts = 0;
+      const burstInterval = setInterval(() => {
+        const randomX = Math.random() * (width * 0.8) + width * 0.1;
+        const randomY = Math.random() * (height * 0.6) + height * 0.15;
+        
+        createFireworkExplosion(randomX, randomY);
+        spawnSorryText(randomX, randomY);
+        spawnSorryText(randomX, randomY);
+
+        bursts++;
+        if (bursts >= 14) {
+          clearInterval(burstInterval);
+        }
+      }, 250);
+
+      // Increase ambient heart rate for extra magic atmosphere
+      clearInterval(ambientInterval);
+      ambientInterval = setInterval(createAmbientHeart, 200);
+    }
+
+    // Event Listeners
+    heartBtn.addEventListener('click', triggerApologyExplosion);
+    heartBtn.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      triggerApologyExplosion(e.touches[0]);
+    }, { passive: false });
+
+  </script>
+</body>
+</html>
